@@ -1,6 +1,6 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,6 +8,10 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
+
+val xcframeworkName = "ComposeApp"
+val xcf = XCFramework(xcframeworkName)
+
 
 kotlin {
     androidTarget {
@@ -23,7 +27,10 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+
+            baseName = xcframeworkName
+            binaryOption("bundleId", "com.ssh.${xcframeworkName}")
+            xcf.add(this)
             isStatic = true
         }
     }
